@@ -13,3 +13,5 @@ Steps to run:
     ```python manage.py runserver```
 
 Use populate.py to populate the db
+
+Use uni.py to populate university list
