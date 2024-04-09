@@ -1,3 +1,4 @@
 beyondCampus/__pycache__/
 beyondCampus/migrations/
 beyond_campus/proj/__pycache__/
+beyond_campus/db.sqlite3
