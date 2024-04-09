@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
-
 class University(models.Model):
     name = models.CharField(max_length=255, unique=True)
     location = models.CharField(max_length=255)
@@ -12,22 +10,25 @@ class University(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
     address = models.TextField()
     university = models.ForeignKey(University, on_delete=models.CASCADE, related_name='students')
 
     def __str__(self):
-        return self.user.username
-
+        return self.first_name
 
 class Landlord(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     ssn = models.CharField(max_length=20)
-    full_name = models.CharField(max_length=255)
-    
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=20)
+    address = models.TextField()
+
     def __str__(self):
-        return self.full_name
+        return self.first_name
 
 class RentalAgreement(models.Model):
     landlord = models.ForeignKey(Landlord, on_delete=models.CASCADE)

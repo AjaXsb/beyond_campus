@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+  <h2>Sign up</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="first_name" class="form-label">First Name:</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" required>
+          </div>
+          <div class="mb-3">
+            <label for="last_name" class="form-label">Last Name:</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="password1" class="form-label">Password:</label>
+            <input type="password" class="form-control" id="password1" name="password1" required>
+          </div>
+          <div class="mb-3">
+            <label for="password2" class="form-label">Confirm Password:</label>
+            <input type="password" class="form-control" id="password2" name="password2" required>
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Address:</label>
+            <input type="text" class="form-control" id="address" name="address" required>
+          </div>
+          <div class="mb-3">
+            <label for="phone" class="form-label">Phone Number:</label>
+            <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+            <small>Format: 123-456-7890</small>
+          </div>
+          <div class="mb-3">
+            <label for="user_type" class="form-label">User Type:</label>
+            <select class="form-select" id="user_type" name="user_type" required>
+              <option value="select" selected disabled hidden>Select User Type</option>
+              <option value="student">Student</option>
+              <option value="landlord">Landlord</option>
+            </select>
+          </div>
+          <div id="student_questions" style="display: none;">
+            <label for="university" class="form-label">University:</label>
+            <select class="form-select" id="university" name="university" required>
+              <option value="select" selected disabled>Select University</option>
+              {% for university in universities %}
+                <option value="{{ university.name }}">{{ university.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div id="landlord_questions" style="display: none;">
+            <label for="ssn" class="form-label">SSN:</label>
+            <input type="text" class="form-control" id="ssn" name="ssn">
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <script>
+    document.getElementById('user_type').addEventListener('change', function() {
+      var userType = this.value;
+      var studentQuestions = document.getElementById('student_questions');
+      var landlordQuestions = document.getElementById('landlord_questions');
+
+      if (userType === 'landlord') {
+        studentQuestions.style.display = 'none';
+        landlordQuestions.style.display = 'block';
+      } else {
+        landlordQuestions.style.display = 'none';
+        studentQuestions.style.display = 'block';
+      }
+    });
+  </script>
+{% endblock %}
