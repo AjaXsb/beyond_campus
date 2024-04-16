@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <div class="card mt-5">
+          <div class="card-body">
+            <h3 class="card-title">User Profile</h3>
+            <hr>
+            <div class="mb-3">
+              <label for="username" class="form-label">Username:</label>
+              <input type="text" class="form-control" id="username" value="{{ user.username }}" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="first_name" class="form-label">First Name:</label>
+              <input type="text" class="form-control" id="first_name" value="{{ user.first_name }}" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="last_name" class="form-label">Last Name:</label>
+              <input type="text" class="form-control" id="last_name" value="{{ user.last_name }}" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email:</label>
+              <input type="email" class="form-control" id="email" value="{{ user.email }}" disabled>
+            </div>
+            {% if user_type == "student" %}
+              <!-- Display student-specific information -->
+              <div class="mb-3">
+                <label for="university" class="form-label">University:</label>
+                <input type="text" class="form-control" id="university" value="{{ user_info.university }}" disabled>
+              </div>
+            {% elif user_type == "landlord" %}
+              <!-- Display landlord-specific information -->
+              <div class="mb-3">
+                <label for="ssn" class="form-label">SSN:</label>
+                <input type="text" class="form-control" id="ssn" value="{{ user_info.ssn }}" disabled>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
