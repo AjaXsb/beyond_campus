@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report Issues for {{ property.name }}</title>
+</head>
+<body>
+    <h1>Report Issues for {{ property.name }}</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="issue">Describe your issue:</label><br>
+        <textarea id="issue" name="issue" rows="4" cols="50" required></textarea><br>
+        <input type="submit" value="Submit Report">
+    </form>
+    <form action="javascript:history.back()">
+        <button type="submit">Back to Listing</button>
+    </form>
+</body>
+</html>
