@@ -53,8 +53,45 @@ def register(request):
     return render(request, "signup.html", {"universities": universities})
 
 def index(request):
-    
-    return render(request, "index.html")
+    context = {}
+    user = request.user
+    context['user_type'] = 'student' if hasattr(user, 'student') else 'landlord'
+
+    # Retrieve common data for all users
+    if context['user_type'] == 'student':
+        student = user.student
+        context['favorites'] = Fav.objects.filter(student=student)
+        context['applications'] = Apply.objects.filter(student=student)
+        context['waitlists'] = Waitlist.objects.filter(student=student)
+        context['maintenance_requests'] = RequestMaintenance.objects.filter(student=student)
+
+    # Handling POST requests for updates and actions
+    if request.method == 'POST':
+        if 'update_profile' in request.POST:
+            # Handling profile update logic here
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            student.first_name = first_name
+            student.last_name = last_name
+            student.save()
+            messages.success(request, "Profile updated successfully.")
+            return redirect('index')
+
+        elif 'submit_request' in request.POST:
+            # Handling maintenance request submission
+            description = request.POST.get('issue')
+            RequestMaintenance.objects.create(property_id=1, student=student,
+                                              description=description)  # Adjust property_id as needed
+            messages.success(request, "Maintenance request submitted successfully.")
+            return redirect('index')
+
+        elif 'submit_report' in request.POST:
+            # Handling issue reporting
+            report_issue = request.POST.get('reportIssue')
+            Report.objects.create(student=student, listing_id=1, type=report_issue)  # Adjust listing_id as needed
+            messages.success(request, "Issue reported successfully.")
+            return redirect('index')
+   return render(request, "index.html")
 
 def login_user(request):
 
@@ -104,3 +141,84 @@ def profile(request):
             user_type = None
 
     return render(request, "profile.html", {"user_info": user_info, "user_type": user_type})
+
+
+def listing_detail(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+    reviews = Review.objects.filter(property_id=listing.property_id)
+    average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] if reviews.exists() else "No ratings yet"
+
+    if request.method == 'POST':
+        if 'add_fav' in request.POST:
+            # Assuming the user is logged in and is a student
+            Fav.objects.create(student=request.user.student, listing=listing)
+            return redirect('listing_detail', listing_id=listing_id)  # Redirect back to the same listing page
+
+    context = {
+        'listing': listing,
+        'average_rating': average_rating,
+    }
+    return render(request, 'listing.html', context)
+
+
+def report_issue(request, property_id):
+    property = get_object_or_404(Property, pk=property_id)
+
+    if request.method == 'POST':
+        issue_description = request.POST.get('issue')
+        if issue_description:
+            # Assume 'student' relation on the user and 'Report' has a 'property' field
+            Report.objects.create(property=property, student=request.user.student, description=issue_description)
+            messages.success(request, "Your report has been submitted successfully!")
+            return redirect('report_issue', property_id=property_id)
+
+    context = {
+        'property': property,
+    }
+    return render(request, 'report.html', context)
+
+
+def property_reviews(request, property_id):
+    property = get_object_or_404(Property, pk=property_id)
+    reviews = Review.objects.filter(property=property)
+
+    if request.method == 'POST':
+        review_text = request.POST.get('review')
+        if review_text:
+            # Create a new Review object assuming there is a 'student' relation on the user
+            Review.objects.create(property=property, student=request.user.student, comment=review_text)
+            messages.success(request, "Your review has been submitted!")
+            return redirect('property_reviews', property_id=property_id)
+
+    context = {
+        'property': property,
+        'reviews': reviews
+    }
+    return render(request, 'review.html', context)
+
+
+@login_required
+def add_to_favourites(request, property_id):
+    property = get_object_or_404(Property, pk=property_id)
+    if request.method == 'POST':
+        Fav.objects.get_or_create(student=request.user.student, property=property)
+        messages.success(request, f"{property.name} has been added to your favourites!")
+        return redirect('favourite', property_id=property_id)  # Redirect to the same page or to the favourites list
+
+    return render(request, 'favourite.html', {'property': property})
+
+def show_favourites(request):
+    favourites = Fav.objects.filter(user=request.user)  # Assuming you filter by logged-in user
+    return render(request, 'myfavourite.html', {'favourites': favourites})
+
+@login_required
+def my_favourites(request):
+    # Assuming Fav model links User to their favourite Properties via a property field
+    favourites = Fav.objects.filter(user=request.user).select_related('property')
+    return render(request, 'myfavourite.html', {'favourites': favourites})
+    
+
+
+
+
+
