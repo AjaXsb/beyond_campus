@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Favourite Properties</title>
+</head>
+<body>
+    <h1>Your Favourite Properties</h1>
+    {% if favourites %}
+        <ul>
+        {% for fav in favourites %}
+            <li>
+                <h2>{{ fav.property.name }}</h2>
+                <p>Description: {{ fav.property.description }}</p>
+                <p>Location: {{ fav.property.location }}</p>
+                <!-- Add more property details as needed -->
+                <a href="{% url 'property_details' fav.property.id %}">View Details</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no favourite properties added yet.</p>
+    {% endif %}
+    <a href="{% url 'home' %}">Back to Home</a>
+</body>
+</html>
