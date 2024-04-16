@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Beyond Campus{% endblock %}</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+    }
+    
+    main {
+      flex: 1;
+      padding: 30px;
+      padding-bottom: 80px;
+    }
+    footer {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+  
+</head>
+<body>
+
+  <header>
+    <h1 class="mb-3">Beyond Campus</h1>
+  </header>
+
+  <main class="container-fluid">
+    <h2 class="mt-4">Request Maintenance Form</h2>
+    <div class ="row mt-5">
+    <form id ="maitenanceForm" class="row g-3">
+        <div class="col-md-4">
+            <label for="nameInput">First Name</label>
+            <input type="text" class="form-control" id="nameInput" required placeholder="Enter First Name">
+            </div>
+        <div class="col-md-4">
+            <label for="nameInput">Last Name</label>
+            <input type="text" class="form-control" id="nameInput" required placeholder="Enter Last Name">
+        </div>
+        <div class="col-md-4">
+            <label for="UniInput">University</label>
+            <input type="text" class="form-control" id="UniInput" required placeholder="Enter University">
+        </div>
+        <div class="col-md-6">
+          <label for="inputEmail4" class="form-label">Email</label>
+          <input type="email" class="form-control" id="inputEmail4" required placeholder= "example@uni.edu">
+        </div>
+        <div class="col-md-4">
+          <label for="Phone" class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="Phone" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" placeholder="Enter Phone">
+        </div class="col-md-6">
+        <div class ="row mt-2">
+          <label for="inputAddress" class="form-label">Rental Address</label>
+          <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+        </div>
+        <div class="col-md-6">
+          <label for="inputAddress2" class="form-label">Address 2</label>
+          <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+        </div>
+        <div class="col-md-4">
+          <label for="inputCity" class="form-label">City</label>
+          <input type="text" class="form-control" id="inputCity" required placeholder= "Enter City">
+        </div>
+        <div class="col-md-4">
+            <label for="inputState" class="form-label">State</label>
+            <input type="text" class="form-control" id="inputState" required placeholder="Enter State">
+          </div>
+        <div class="col-md-2">
+          <label for="inputZip" class="form-label">Zip</label>
+          <input type="text" class="form-control" id="inputZip" required placeholder="Enter ZipCode">
+        </div>
+        <div class="mt-3">
+        <div class="col-md-4">
+            <label for="LLnameInput">Landlord's Name</label>
+            <input type="text" class="form-control" id="LLnameInput" required placeholder="Enter Landlord's Name">
+        </div>
+    <div class="mt-3">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="requestTypeSelect">Request Type</label>
+                <select class="form-control" id="requestTypeSelect">
+                    <option selected disabled value="">Select Request Type</option>
+                    <option>Plumbing</option>
+                    <option>Electrical</option>
+                    <option>Heating</option>
+                    <option>Gas</option>
+                    <option>Repair</option>
+                    <option>Carpentry/Woodworking</option>
+                    <option>Other (please specify) _______________________</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class ="row mt-2">
+            <label for="FormControlTextarea" class="form-label">Issue</label>
+            <textarea class="form-control" id="FormControlTextarea" rows="3"></textarea>
+          </div>
+        <div class="col-12">
+        <div class="col-12">
+        </div>
+         
+        <div class ="row mt-4">
+        <div class="form-group">
+            <label for="exampleFormControlFile1"></label>
+            <input type="file" class="form-control-file" id="exampleFormControlFile1">
+        </div>
+        
+
+        <div class ="row mt-4">
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+  </main>
+
+  <footer class="bg-dark text-white text-center py-2">
+    &copy; 2024 Beyond Campus
+  </footer>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</body>
+</html>
