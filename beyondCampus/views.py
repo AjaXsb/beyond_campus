@@ -200,25 +200,22 @@ def property_reviews(request, property_id):
 @login_required
 def add_to_favourites(request, property_id):
     property = get_object_or_404(Property, pk=property_id)
+    student = get_object_or_404(Student, pk=request.user.student.id)
     if request.method == 'POST':
-        Fav.objects.get_or_create(student=request.user.student, property=property)
+        Fav.objects.get_or_create(student=student, property=property)
         messages.success(request, f"{property.name} has been added to your favourites!")
         return redirect('favourite', property_id=property_id)  # Redirect to the same page or to the favourites list
 
     return render(request, 'favourite.html', {'property': property})
 
-def show_favourites(request):
-    favourites = Fav.objects.filter(user=request.user)  # Assuming you filter by logged-in user
+def show_favourites(request,student_id):
+    favourites = Fav.objects.filter(user=request.student)  # Assuming you filter by logged-in user
+   # student = get_object_or_404(student, student_id)
     return render(request, 'myfavourite.html', {'favourites': favourites})
 
 @login_required
 def my_favourites(request):
-    # Assuming Fav model links User to their favourite Properties via a property field
-    favourites = Fav.objects.filter(user=request.user).select_related('property')
+    student = get_object_or_404(Student, pk=request.user.student.id)
+    favourites = Fav.objects.filter(student=student).select_related('property')
     return render(request, 'myfavourite.html', {'favourites': favourites})
-    
-
-
-
-
 
