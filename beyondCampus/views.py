@@ -120,25 +120,7 @@ def logout_user(request):
 
     return redirect('login')
 
-@login_required
-def profile(request):
 
-    try:
-        # Try to fetch a Student object associated with the user
-        user_info = Student.objects.get(user=request.user)
-        user_type = 'student'
-
-    except Student.DoesNotExist:
-        try:
-
-            # Try to fetch a Landlord object associated with the user
-            user_info = Landlord.objects.get(user=request.user)
-            user_type = 'landlord'
-
-        except Landlord.DoesNotExist:
-            # Handle the case where the user does not have a Student or Landlord object
-            user_info = None
-            user_type = None
 @login_required
 def profile(request):
 
@@ -148,8 +130,10 @@ def profile(request):
         # Try to fetch a Student object associated with the user
         user_info = Student.objects.get(user=request.user)
         user_type = 'student'
-
-    except Student.DoesNotExist:
+    
+    return render(request, "student_dashboard.html", {"user_info": user_info, "user_type": user_type, "properties": properties})
+    
+except Student.DoesNotExist:
         try:
             # Try to fetch a Landlord object associated with the user
             user_info = Landlord.objects.get(user=request.user)
@@ -162,7 +146,7 @@ def profile(request):
             user_info = None
             user_type = None
             
-    return render(request, "profile.html", {"user_info": user_info, "user_type": user_type, "properties": properties})
+    return render(request, "Landloard_Dashboard.html", {"user_info": user_info, "user_type": user_type, "properties": properties})
 
 def listing_detail(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
