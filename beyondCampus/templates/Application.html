@@ -100,11 +100,6 @@
               {% endfor %}
             {% endif %}
         </div>
-        <div class="col-md-4">
-          <label for="Phone" class="form-label">Phone Number</label>
-          <input type="tel" class="form-control" id="Phone" name="phone" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" placeholder="Enter Phone">
-        </div class="col-md-6">
-        <div class ="row mt-2">
           <label for="inputAddress" class="form-label">Home Address</label>
           <input type="text" class="form-control" id="inputHomeAddress" name="home_address" placeholder="1234 Main St">
           {% if form.home_address.errors %}
