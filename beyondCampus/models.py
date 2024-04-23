@@ -149,6 +149,7 @@ class CoveredBy(models.Model):
 class RequestMaintenance(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    issue_type = models.CharField(max_length=100, default="General") 
     description = models.TextField()
 
     def __str__(self):
