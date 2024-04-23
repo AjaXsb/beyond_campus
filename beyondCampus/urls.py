@@ -13,7 +13,7 @@ urlpatterns = [
     path('create-listing/', views.create_listing, name='create_listing'),
     path("maintenance/<int:property_id>/", views.request_maintenance, name='request_maintenance'),
     path("insurance/<int:property_id>/", views.insurance_coverage, name='insurance_coverage'),
-    path("utility/<int:property_id>/", views.utility_provider, name='utility_provider')
+    path("utility/<int:property_id>/", views.utility_provider, name='utility_provider'),
     path("submit-application/", views.application_submission, name='submit_application'),]
 
 urlpatterns = [
