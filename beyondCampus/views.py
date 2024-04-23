@@ -331,50 +331,26 @@ def create_listing(request):
         return render(request, 'profile.html', {'properties_owned': properties_owned})
 
 @login_required
-def application_submission(request):
+def apply_to_listing(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+    rental_agreement = RentalAgreement.objects.first()
+    
     if request.method == 'POST':
-        form = ApplicationForm(request.POST, request.FILES)
-        if form.is_valid():
-            new_application = form.save(commit=False)
-
-            student = Student.objects.get(id=request.POST.get('student_id'))
-            listing = Listing.objects.get(id=request.POST.get('listing_id'))
-            new_application.student = student
-            new_application.listing = listing
-
-            new_application.save()
-            messages.success(request, "Your application has been submitted successfully!")
-            return redirect('applications')
-        else:
-            messages.error(request, "Please correct the errors below.")
-    else:
-        form = ApplicationForm()
-    return render(request, 'application.html', {'form': form})
-
-@login_required
-def create_maintenance_request(request):
-    if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        landlord_name = request.POST.get('landlord_name')
-        request_type = request.POST.get('request_type')
-        issue_description = request.POST.get('issue')
-        rental_address = request.POST.get('rental_address')
-        address2 = request.POST.get('address2')
-        city = request.POST.get('city')
-        state = request.POST.get('state')
-        zip_code = request.POST.get('zip_code')
-
-        try:
-                student = request.user.student
-            except Student.DoesNotExist:
-                return HttpResponse("You do not have a student profile.", status=400)
-        try:
-            occupy_record = Occupy.objects.get(student=student)
-            property = occupy_record.property
-        except Occupy.DoesNotExist:
-                return HttpResponse("You do not have a registered property.", status=400)
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        preferences = request.POST.get('preferences')
+        additional_info = request.POST.get('additional_info')
         
-        if not validate_address_with_property(property, rental_address, address2, city, state, zip_code):
-            return HttpResponse("The provided address does not match our records.", status=400)
+        # Create an application object and save it to the database
+        application = Apply.objects.create(
+            student=request.user.student,
+            listing=listing,
+            start_date=start_date,
+            end_date=end_date,
+            preferences=preferences,
+            additional_info=additional_info,
+            agreement_terms=rental_agreement.agreement_terms  
+        )
+        return redirect('applications', application_num=application.application_num)
+    return render(request, 'Application.html', {'listing': listing, 'rental_agreement': rental_agreement})
+
