@@ -357,3 +357,37 @@ def apply_to_listing(request, listing_id):
     }
     return render(request, 'Application.html', context)
 
+@login_required
+def request_maintenance(request):
+    if request.method == 'POST':
+        rental_address = request.POST.get('rental_address').strip()
+        issue_type = request.POST.get('issue_type')
+        description = request.POST.get('description').strip()
+
+        if not rental_address or not description or not issue_type:
+            messages.error(request, 'All fields are required.')
+            return render(request, 'request_maintenance.html')
+
+        # Verify if the property exists
+        try:
+            property = Property.objects.get(address=rental_address)
+        except Property.DoesNotExist:
+            messages.error(request, "Check address.")
+            return render(request, 'request_maintenance.html')
+
+        # Check if the logged-in student occupies the property
+        try:
+            occupy_record = Occupy.objects.get(property=property, student=request.user.student)
+        except Occupy.DoesNotExist:
+            messages.error(request, "Not a resident of the specified property.")
+            return render(request, 'request_maintenance.html')
+
+        # Create the maintenance request
+        RequestMaintenance.objects.create(
+            property=property,
+            student=request.user.student,
+            issue_type=issue_type,
+            description=description
+        )
+        messages.success(request, 'Your maintenance request has been submitted successfully.')
+        return redirect('profile')
