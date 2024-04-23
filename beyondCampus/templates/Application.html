@@ -42,69 +42,114 @@
     <h1 class="mb-3">Beyond Campus</h1>
   </header>
 
+  <div class="row">
+    <div class="col-12">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
   <main class="container-fluid">
     <h2 class="mt-4">Application Form</h2>
     <div class ="row mt-5">
-    <form id ="maitenanceForm" class="row g-3">
+    <form id ="ApplicationForm" class="row g-3" method="post" action="{% url 'application_submission' %}" enctype="multipart/form-data">>
+      {% csrf_token %}
         <div class="col-md-4">
             <label for="nameInput">First Name</label>
-            <input type="text" class="form-control" id="nameInput" required placeholder="Enter First Name">
-            </div>
+            <input type="text" class="form-control" id="firstnameInput" name="first_name" required placeholder="Enter First Name">
+            {% if form.first_name.errors %}
+              {% for error in form.first_name.errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
+        </div>
         <div class="col-md-4">
             <label for="nameInput">Last Name</label>
-            <input type="text" class="form-control" id="nameInput" required placeholder="Enter Last Name">
+            <input type="text" class="form-control" id="lastnameInput" name="last_name" required placeholder="Enter Last Name">
         </div>
         <div class="col-md-4">
             <label for="UniInput">University</label>
-            <input type="text" class="form-control" id="UniInput" required placeholder="Enter Last Name">
+            <input type="text" class="form-control" id="UniInput" name="university" required placeholder="Enter Last Name">
+            {% if form.last_name.errors %}
+              {% for error in form.last_name.errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
         </div>
         <div class="col-md-4">
             <label for="UniInput">Program</label>
-            <input type="text" class="form-control" id="Programinput" required placeholder="Enter Program Details">
+            <input type="text" class="form-control" id="Programinput" name="program" required placeholder="Enter Program Details">
         </div>
         <div class="col-md-6">
           <label for="inputSID" class="form-label">Student ID</label>
-          <input type="id" class="form-control" id="inputSID" required>
+          <input type="id" class="form-control" id="inputSID" name="student_id" required>
+          {% if form.student_id.errors %}
+              {% for error in form.student_id.errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+              {% endfor %}
+          {% endif %}
         </div>
         <div class="col-md-6">
           <label for="inputEmail4" class="form-label">Email</label>
-          <input type="email" class="form-control" id="inputEmail4" required placeholder= "example@uni.edu">
+          <input type="email" class="form-control" id="inputEmail4" name="email" required placeholder= "example@uni.edu">
+          {% if form.email.errors %}
+              {% for error in form.email.errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
         </div>
         <div class="col-md-4">
           <label for="Phone" class="form-label">Phone Number</label>
-          <input type="tel" class="form-control" id="Phone" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" placeholder="Enter Phone">
+          <input type="tel" class="form-control" id="Phone" name="phone" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" placeholder="Enter Phone">
         </div class="col-md-6">
         <div class ="row mt-2">
           <label for="inputAddress" class="form-label">Home Address</label>
-          <input type="text" class="form-control" id="inputHomeAddress" placeholder="1234 Main St">
+          <input type="text" class="form-control" id="inputHomeAddress" name="home_address" placeholder="1234 Main St">
+          {% if form.home_address.errors %}
+              {% for error in form.home_address.errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
         </div>
         <div class="col-md-6">
-          <label for="inputAddress2" class="form-label">Address 2</label>
-          <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+          <label for="inputAddress2" class="form-label">Address line 2</label>
+          <input type="text" class="form-control" id="inputAddress2" name="address_line2" placeholder="Apartment, studio, or floor">
         </div>
         <div class="col-md-4">
           <label for="inputCity" class="form-label">City</label>
-          <input type="text" class="form-control" id="inputCity" required placeholder= "Enter City">
+          <input type="text" class="form-control" id="inputCity" name="city" required placeholder= "Enter City">
         </div>
         <div class="col-md-4">
             <label for="inputState" class="form-label">State</label>
-            <input type="text" class="form-control" id="inputState" required placeholder="Enter State">
+            <input type="text" class="form-control" id="inputState" name="state" required placeholder="Enter State">
           </div>
         <div class="col-md-2">
           <label for="inputZip" class="form-label">Zip</label>
-          <input type="text" class="form-control" id="inputZip" required placeholder="Enter ZipCode">
+          <input type="text" class="form-control" id="inputZip" name="zipcode" required placeholder="Enter ZipCode">
+          {% if form.zipcode.errors %}
+              {% for error in form.zipcode.errors %}
+                <div class="alert alert-danger">{{ error }}</div>
+              {% endfor %}
+            {% endif %}
         </div>
     <div class="mt-3">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="requestTypeSelect">Government ID Type</label>
-                <select class="form-control" id="requestTypeSelect">
+                <select class="form-control" id="requestTypeSelect" name="id_type">
                     <option selected disabled value="">Select ID Type</option>
                     <option>Passport</option>
                     <option>SSN</option>
                     <option>State ID</option>
                     <option>Driver's License</option>
                 </select>
+              {% if form.id_type.errors %}
+                  {% for error in form.id_type.errors %}
+                      <div class="alert alert-danger">{{ error }}</div>
+                  {% endfor %}
+              {% endif %}
             </div>
         </div>
     </div>
@@ -112,27 +157,32 @@
     <div class ="row mt-4">
         <div class="form-group">
             <label for="exampleFormControlFile1">Upload ID</label>
-            <input type="file" class="form-control-file" id="exampleFormControlFile1" required placeholder="Upload ID">
+            <input type="file" class="form-control-file" id="exampleFormControlFile1" name="id_document" required placeholder="Upload ID">
+            {% if form.id_type.errors %}
+                  {% for error in form.id_type.errors %}
+                      <div class="alert alert-danger">{{ error }}</div>
+                  {% endfor %}
+            {% endif %}
         </div>
 
     <div class ="row mt-2">
             <label for="FormControlTextarea1" class="form-label">Why this place? </label>
-            <textarea class="form-control" id="FormControlTextarea1" rows="5"></textarea>
+            <textarea class="form-control" id="FormControlTextarea1" rows="5" name="reason_for_choice"></textarea>
           </div>
 
     <div class="col-12">
         <label for="FormControlTextarea3" class="form-label">Any preferences? </label>
-        <textarea class="form-control" id="FormControlTextarea3" rows="5"></textarea>
+        <textarea class="form-control" id="FormControlTextarea3" rows="5" name="preferences"></textarea>
         </div>
          
         <div class ="row mt-4">
         <div class="form-group">
         <label for="exampleFormControlFile2">University Decision Letter</label>
-        <input type="file" class="form-control-file" id="exampleFormControlFile2" required placeholder="University Decision Letter">
+        <input type="file" class="form-control-file" id="exampleFormControlFile2" name="university_decision_letter" required placeholder="University Decision Letter">
         </div>
         <div class="form-group">
             <label for="exampleFormControlFile3">Additional Documents</label>
-            <input type="file" class="form-control-file" id="exampleFormControlFile3" required placeholder="Additional Documents">
+            <input type="file" class="form-control-file" id="exampleFormControlFile3" name="additional_documents" required placeholder="Additional Documents">
         </div>
         
 
