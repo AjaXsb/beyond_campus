@@ -11,7 +11,7 @@ urlpatterns = [
 
     path("applications/", views.show_applications, name="applications"),
     path('create-listing/', views.create_listing, name='create_listing'),
-    path('apply/<int:listing_id>/', apply_to_listing, name='apply_to_listing'),
+    path('apply/<int:listing_id>/', views.apply_to_listing, name='apply_to_listing'),
 
     path('',views.my_favourites, name='my_favourites'),
     path('',views.myhouse_dashboard, name='myhouse_dashboard'),
