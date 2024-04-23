@@ -8,7 +8,10 @@ urlpatterns = [
     path("login/", views.login_user, name="login"),
     path("profile/", views.profile, name="profile"),
     path("logout/", views.logout_user, name="logout"),
-]
+    path("dashboard/", views.myhouse_dashboard, name='myhouse_dashboard'),
+    path("maintenance/<int:property_id>/", views.request_maintenance, name='request_maintenance'),
+    path("insurance/<int:property_id>/", views.insurance_coverage, name='insurance_coverage'),
+    path("utility/<int:property_id>/", views.utility_provider, name='utility_provider'),]
 
 urlpatterns = [
     path('properties/<int:property_id>/add_favourite/', add_to_favourites, name='add_to_favourites'),
