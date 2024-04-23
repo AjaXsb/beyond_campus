@@ -163,8 +163,6 @@ def profile(request):
             user_type = None
             
     return render(request, "profile.html", {"user_info": user_info, "user_type": user_type, "properties": properties})
-    return render(request, "profile.html", {"user_info": user_info, "user_type": user_type})
-
 
 def listing_detail(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
