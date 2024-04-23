@@ -91,7 +91,8 @@ def index(request):
             Report.objects.create(student=student, listing_id=1, type=report_issue)  # Adjust listing_id as needed
             messages.success(request, "Issue reported successfully.")
             return redirect('index')
-   return render(request, "index.html")
+            
+        return render(request, "index.html")
 
 def login_user(request):
 
