@@ -59,6 +59,14 @@
   button.btn-primary:hover {
     background-color: #0069d9;
   }
+  .terms-info {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 15px;
+  }
+  .terms-checkbox {
+    margin-bottom: 1rem;
+  }
   @media (max-width: 768px) {
     .form-row {
       flex-direction: column;
@@ -73,7 +81,7 @@
   <div class="row">
     <div class="col-md-8 offset-md-2 form-container">
       <h2 class="mb-4">Apply to this Listing</h2>
-      <form method="post">
+      <form method="post" action="{% url 'applications' %}">
         {% csrf_token %}
         <div class="form-row">
           <div class="mb-3">
@@ -93,10 +101,27 @@
           <label for="additional_info" class="form-label">Additional Info</label>
           <textarea class="form-control" id="additional_info" name="additional_info" rows="3"></textarea>
         </div>
-        <div class="mt-5">
-        <div class="mt-5">
-         <div class="mb-3">
-        <button type="submit" class="btn btn-primary">Submit Application</button>
+
+        <!-- Display rental agreement terms -->
+        <div class="mb-3">
+          <label for="rental_terms" class="form-label"> Agreement Terms</label>
+          <div id="rental_terms" class="terms-container">
+              {{ rental_agreement.agreement_terms|safe }}
+          </div>
+      </div>
+      
+      <!-- Checkbox for agreement -->
+      <div class="mb-3">
+          <input type="checkbox" class="form-check-input" id="agree_terms" name="agree_terms" required>
+          <label for="agree_terms" class="form-check-label">
+              I agree to the terms and conditions above.
+          </label>
+      </div>
+
+        <!-- Submit button -->
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary">Submit Application</button>
+        </div>
       </form>
     </div>
   </div>
