@@ -350,3 +350,31 @@ def application_submission(request):
     else:
         form = ApplicationForm()
     return render(request, 'application.html', {'form': form})
+
+@login_required
+def create_maintenance_request(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        landlord_name = request.POST.get('landlord_name')
+        request_type = request.POST.get('request_type')
+        issue_description = request.POST.get('issue')
+        rental_address = request.POST.get('rental_address')
+        address2 = request.POST.get('address2')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip_code')
+
+        try:
+                student = request.user.student
+            except Student.DoesNotExist:
+                return HttpResponse("You do not have a student profile.", status=400)
+        try:
+            occupy_record = Occupy.objects.get(student=student)
+            property = occupy_record.property
+        except Occupy.DoesNotExist:
+                return HttpResponse("You do not have a registered property.", status=400)
+        
+        if not validate_address_with_property(property, rental_address, address2, city, state, zip_code):
+            return HttpResponse("The provided address does not match our records.", status=400)
