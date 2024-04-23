@@ -329,3 +329,24 @@ def create_listing(request):
         properties_owned = Property.objects.filter(landlord=request.user.landlord)
     
         return render(request, 'profile.html', {'properties_owned': properties_owned})
+
+@login_required
+def application_submission(request):
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_application = form.save(commit=False)
+
+            student = Student.objects.get(id=request.POST.get('student_id'))
+            listing = Listing.objects.get(id=request.POST.get('listing_id'))
+            new_application.student = student
+            new_application.listing = listing
+
+            new_application.save()
+            messages.success(request, "Your application has been submitted successfully!")
+            return redirect('applications')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ApplicationForm()
+    return render(request, 'application.html', {'form': form})
