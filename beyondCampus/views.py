@@ -240,7 +240,7 @@ def my_favourites(request):
     favourites = Fav.objects.filter(student=student).select_related('property')
     return render(request, 'myfavourite.html', {'favourites': favourites})
 
-def myhouse_dashboard(request):
+def student_dashboard(request):
     # Assuming each user is linked to a student and each student is linked to exactly one property
     student = get_object_or_404(Student, user=request.user)
     property = get_object_or_404(Property, student=student)
@@ -248,7 +248,15 @@ def myhouse_dashboard(request):
     context = {
         'property': property,
     }
-    return render(request, 'myhouse_dashboard.html', context)
+    return render(request, 'student_dashboard.html', context)
+
+def myhouse_dashboard(request):
+    current_occupy = Occupy.objects.filter(student__user=request.user).first()
+    if not current_occupy:
+        messages.error(request, "You do not have a current residence.")
+        return redirect('student_dashboard.html')
+    request.session['property_id'] = current_occupy.property.id
+    return render(request, 'Myhouse.html', {'property': current_occupy.property})
 
 def request_maintenance(request):
     student = get_object_or_404(Student, pk=request.user.student.id)
