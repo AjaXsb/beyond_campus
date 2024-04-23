@@ -219,7 +219,7 @@ def my_favourites(request):
     favourites = Fav.objects.filter(student=student).select_related('property')
     return render(request, 'myfavourite.html', {'favourites': favourites})
 
-def student_dashboard(request):
+def myhouse_dashboard(request):
     # Assuming each user is linked to a student and each student is linked to exactly one property
     student = get_object_or_404(Student, user=request.user)
     property = get_object_or_404(Property, student=student)
@@ -227,7 +227,7 @@ def student_dashboard(request):
     context = {
         'property': property,
     }
-    return render(request, 'student_dashboard.html', context)
+    return render(request, 'myhouse_dashboard.html', context)
 
 def request_maintenance(request):
     student = get_object_or_404(Student, pk=request.user.student.id)
