@@ -234,7 +234,7 @@ def request_maintenance(request):
     property_id = request.session.get('property_id')
     if not property_id:
         messages.error(request, "Property not specified.")
-        return redirect('student_dashboard.html')
+        return redirect('myhouse_dashboard.html')
     maintenance_requests = RequestMaintenance.objects.filter(property__id=property_id, student=student)
     return render(request, 'Request_Maintenance.html', {'maintenance_requests': maintenance_requests })
 
@@ -242,7 +242,7 @@ def insurance_coverage(request):
     property_id = request.session.get('property_id')
     if not property_id:
         messages.error(request, "Property not specified.")
-        return redirect('student_dashboard.html')
+        return redirect('myhouse_dashboard.html')
     coverage = CoveredBy.objects.filter(property__id=property_id)
     return render(request, 'Insurance.html', {'coverage': coverage})
 
@@ -250,6 +250,6 @@ def utility_provide(request):
     property_id = request.session.get('property_id')
     if not property_id:
         messages.error(request, "Property not specified.")
-        return redirect('student_dashboard.html')
+        return redirect('myhouse_dashboard.html')
     utility_providers = UtilityProvide.objects.filter(property__id=property_id).select_related('provider')
     return render(request, 'UtilityProvider.html', {'utility_providers': utility_providers})
