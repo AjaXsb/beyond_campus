@@ -219,3 +219,14 @@ def my_favourites(request):
     favourites = Fav.objects.filter(student=student).select_related('property')
     return render(request, 'myfavourite.html', {'favourites': favourites})
 
+
+def request_maintenance(request):
+    student = get_object_or_404(Student, pk=request.user.student.id)
+    property_id = request.session.get('property_id')
+    if not property_id:
+        # Handle the case where the property_id is not available
+        messages.error(request, "Property not specified.")
+        return redirect('some_default_page')
+    maintenance_requests = RequestMaintenance.objects.filter(property__id=property_id, student=student)
+    return render(request, 'Request_Maintenance.html', {'maintenance_requests': maintenance_requests })
+
