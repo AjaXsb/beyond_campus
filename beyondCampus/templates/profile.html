@@ -3,45 +3,91 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 mx-auto">
-        <div class="card mt-5">
-          <div class="card-body">
-            <h3 class="card-title">User Profile</h3>
-            <hr>
-            <div class="mb-3">
-              <label for="username" class="form-label">Username:</label>
-              <input type="text" class="form-control" id="username" value="{{ user.username }}" disabled>
-            </div>
-            <div class="mb-3">
-              <label for="first_name" class="form-label">First Name:</label>
-              <input type="text" class="form-control" id="first_name" value="{{ user.first_name }}" disabled>
-            </div>
-            <div class="mb-3">
-              <label for="last_name" class="form-label">Last Name:</label>
-              <input type="text" class="form-control" id="last_name" value="{{ user.last_name }}" disabled>
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Email:</label>
-              <input type="email" class="form-control" id="email" value="{{ user.email }}" disabled>
-            </div>
-            {% if user_type == "student" %}
-              <!-- Display student-specific information -->
-              <div class="mb-3">
-                <label for="university" class="form-label">University:</label>
-                <input type="text" class="form-control" id="university" value="{{ user_info.university }}" disabled>
-              </div>
-            {% elif user_type == "landlord" %}
-              <!-- Display landlord-specific information -->
-              <div class="mb-3">
-                <label for="ssn" class="form-label">SSN:</label>
-                <input type="text" class="form-control" id="ssn" value="{{ user_info.ssn }}" disabled>
-              </div>
-            {% endif %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <div class="card mt-5">
+        <div class="card-body">
+          <h3 class="card-title">User Profile</h3>
+          <hr>
+          <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" class="form-control" id="username" value="{{ user.username }}" disabled>
           </div>
+          <div class="mb-3">
+            <label for="first_name" class="form-label">First Name:</label>
+            <input type="text" class="form-control" id="first_name" value="{{ user_info.first_name }}" disabled>
+          </div>
+          <div class="mb-3">
+            <label for="last_name" class="form-label">Last Name:</label>
+            <input type="text" class="form-control" id="last_name" value="{{ user_info.last_name }}" disabled>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" value="{{ user_info.email }}" disabled>
+          </div>
+          {% if user_type == "student" %}
+            <!-- Display student-specific information -->
+            <div class="mb-3">
+              <label for="university" class="form-label">University:</label>
+              <input type="text" class="form-control" id="university" value="{{ user_info.university }}" disabled>
+            </div>
+          {% elif user_type == "landlord" %}
+            <!-- Display landlord-specific information -->
+            <div class="mb-3">
+              <label for="ssn" class="form-label">SSN:</label>
+              <input type="text" class="form-control" id="ssn" value="{{ user_info.ssn }}" disabled>
+            </div>
+            <!-- Display properties owned by the landlord -->
+            <div class="mb-3">
+              <h5>Properties Owned:</h5>
+              <ul>
+                {% for property in properties %}
+                  <li>{{ property.address }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            <!-- Button to toggle the listing creation form -->
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#listingFormCollapse" aria-expanded="false" aria-controls="listingFormCollapse">
+              Create Listing
+            </button>
+            <!-- Listing creation form -->
+            <div class="collapse mt-3" id="listingFormCollapse">
+              <div class="card card-body">
+                <form method="post" action="{% url 'create_listing' %}">
+                  {% csrf_token %}
+                  <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="rent" class="form-label">Rent:</label>
+                    <input type="text" class="form-control" id="rent" name="rent" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="room" class="form-label">Rooms:</label>
+                    <input type="text" class="form-control" id="room" name="room" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="amenities" class="form-label">Amenities:</label>
+                    <textarea class="form-control" id="amenities" name="amenities" rows="3" required></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label for="property" class="form-label">Property:</label>
+                    <select class="form-control" id="property" name="property" required>
+                      {% for property in properties %}
+                        <option value="{{ property.id }}">{{ property.address }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+              </div>
+            </div>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}
