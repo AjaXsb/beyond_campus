@@ -14,7 +14,7 @@ urlpatterns = [
     path("maintenance/<int:property_id>/", views.request_maintenance, name='request_maintenance'),
     path("insurance/<int:property_id>/", views.insurance_coverage, name='insurance_coverage'),
     path("utility/<int:property_id>/", views.utility_provider, name='utility_provider'),
-    path("submit-application/", views.application_submission, name='submit_application'),]
+    path('apply/<int:listing_id>/', apply_to_listing, name='apply_to_listing'),]
 
 urlpatterns = [
     path('properties/<int:property_id>/add_favourite/', add_to_favourites, name='add_to_favourites'),
