@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from .models import *
 from django.http import HttpResponse
+from django.db.models import Avg
+from django.contrib import messages
 
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
@@ -132,9 +134,9 @@ def profile(request):
         user_info = Student.objects.get(user=request.user)
         user_type = 'student'
     
-    return render(request, "student_dashboard.html", {"user_info": user_info, "user_type": user_type, "properties": properties})
+        return render(request, "student_dashboard.html", {"user_info": user_info, "user_type": user_type, "properties": properties})
     
-except Student.DoesNotExist:
+    except Student.DoesNotExist:
         try:
             # Try to fetch a Landlord object associated with the user
             user_info = Landlord.objects.get(user=request.user)
