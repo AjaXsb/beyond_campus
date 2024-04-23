@@ -13,7 +13,6 @@ urlpatterns = [
     path('create-listing/', views.create_listing, name='create_listing'),
     path('apply/<int:listing_id>/', apply_to_listing, name='apply_to_listing'),
 
-    path('',views.student_dashboard, name='student_dashboard'),
     path('',views.my_favourites, name='my_favourites'),
     path('',views.myhouse_dashboard, name='myhouse_dashboard'),
     path("maintenance/<int:property_id>/", views.request_maintenance, name='request_maintenance'),
