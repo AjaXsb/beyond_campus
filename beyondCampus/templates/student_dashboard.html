@@ -1,0 +1,19 @@
+
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+ <h2>Welcome, {{ user.get_full_name }}</h2>
+  <div>
+    <h3>Current Residence: {{ property.name }}</h3>
+
+    <!-- Links for property-specific services -->
+    <ul>
+      <li><a href="{% url 'request_maintenance' property.id %}">Request Maintenance for {{ property.name }}</a></li>
+      <li><a href="{% url 'insurance_coverage' property.id %}">View Insurance Coverage for {{ property.name }}</a></li>
+      <li><a href="{% url 'utility_provider' property.id %}">View Utility Providers for {{ property.name }}</a></li>
+    </ul>
+  </div>
+
+{% endblock %}
