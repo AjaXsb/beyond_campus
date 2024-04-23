@@ -219,14 +219,37 @@ def my_favourites(request):
     favourites = Fav.objects.filter(student=student).select_related('property')
     return render(request, 'myfavourite.html', {'favourites': favourites})
 
+def student_dashboard(request):
+    # Assuming each user is linked to a student and each student is linked to exactly one property
+    student = get_object_or_404(Student, user=request.user)
+    property = get_object_or_404(Property, student=student)
+
+    context = {
+        'property': property,
+    }
+    return render(request, 'student_dashboard.html', context)
 
 def request_maintenance(request):
     student = get_object_or_404(Student, pk=request.user.student.id)
     property_id = request.session.get('property_id')
     if not property_id:
-        # Handle the case where the property_id is not available
         messages.error(request, "Property not specified.")
-        return redirect('some_default_page')
+        return redirect('student_dashboard.html')
     maintenance_requests = RequestMaintenance.objects.filter(property__id=property_id, student=student)
     return render(request, 'Request_Maintenance.html', {'maintenance_requests': maintenance_requests })
 
+def insurance_coverage(request):
+    property_id = request.session.get('property_id')
+    if not property_id:
+        messages.error(request, "Property not specified.")
+        return redirect('student_dashboard.html')
+    coverage = CoveredBy.objects.filter(property__id=property_id)
+    return render(request, 'Insurance.html', {'coverage': coverage})
+
+def utility_provide(request):
+    property_id = request.session.get('property_id')
+    if not property_id:
+        messages.error(request, "Property not specified.")
+        return redirect('student_dashboard.html')
+    utility_providers = UtilityProvide.objects.filter(property__id=property_id).select_related('provider')
+    return render(request, 'UtilityProvider.html', {'utility_providers': utility_providers})
