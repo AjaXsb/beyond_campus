@@ -139,7 +139,30 @@ def profile(request):
             # Handle the case where the user does not have a Student or Landlord object
             user_info = None
             user_type = None
+@login_required
+def profile(request):
 
+    properties = None  # Define properties variable outside the try-except block
+
+    try:
+        # Try to fetch a Student object associated with the user
+        user_info = Student.objects.get(user=request.user)
+        user_type = 'student'
+
+    except Student.DoesNotExist:
+        try:
+            # Try to fetch a Landlord object associated with the user
+            user_info = Landlord.objects.get(user=request.user)
+            user_type = 'landlord'
+            properties = Property.objects.filter(landlordown__landlord=user_info)
+            print(properties)
+
+        except Landlord.DoesNotExist:
+            # Handle the case where the user does not have a Student or Landlord object
+            user_info = None
+            user_type = None
+            
+    return render(request, "profile.html", {"user_info": user_info, "user_type": user_type, "properties": properties})
     return render(request, "profile.html", {"user_info": user_info, "user_type": user_type})
 
 
@@ -253,3 +276,58 @@ def utility_provide(request):
         return redirect('myhouse_dashboard.html')
     utility_providers = UtilityProvide.objects.filter(property__id=property_id).select_related('provider')
     return render(request, 'UtilityProvider.html', {'utility_providers': utility_providers})
+
+
+@login_required
+def show_applications(request):
+    student = request.user.student  # Assuming the student is related to the User model
+
+    # Get all applications associated with the student
+    applications = Apply.objects.filter(student=student)
+
+    # Retrieve the status for each application
+    for application in applications:
+        waitlist = Waitlist.objects.filter(student=student, listing=application.listing).first()
+        if waitlist:
+            application.status = waitlist.status
+        else:
+            application.status = "Unknown"
+
+    # Prepare data to pass to the template
+    data = {
+        'applications': applications
+    }
+
+    return render(request, 'show_applications.html', data)
+    
+    
+@login_required
+def create_listing(request):
+    if request.method == 'POST':
+        # Extract data from the request.POST dictionary
+        title = request.POST.get('title')
+        rent = request.POST.get('rent')
+        room = request.POST.get('room')
+        amenities = request.POST.get('amenities')
+        property_id = request.POST.get('property')
+
+        # Get the Property object based on the selected property_id
+        property_obj = Property.objects.get(id=property_id)
+
+        # Create the listing object
+        listing = Listing.objects.create(
+            title=title,
+            rent=rent,
+            room=room,
+            amenities=amenities,
+            landlord=request.user.landlord,
+        )
+        
+        # Redirect to the profile page after creating the listing
+        return redirect('profile')
+
+    else:
+        # Fetch all properties owned by the current user (landlord)
+        properties_owned = Property.objects.filter(landlord=request.user.landlord)
+    
+        return render(request, 'profile.html', {'properties_owned': properties_owned})
