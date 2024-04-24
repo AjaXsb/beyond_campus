@@ -18,6 +18,7 @@ urlpatterns = [
     path("maintenance/<int:property_id>/", views.request_maintenance, name='request_maintenance'),
     path("insurance/<int:property_id>/", views.insurance_coverage, name='insurance_coverage'),
     path("utility/<int:property_id>/", views.utility_provider, name='utility_provider'),
+    path('faqs/', views.faq_view, name='faqs'),
 
 
 ]
