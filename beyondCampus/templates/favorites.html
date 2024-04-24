@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Favorite Listings{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mt-4">Favorite Listings</h2>
+  <div class="row mt-4">
+    {% for favorite_listing in favorite_listings %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ favorite_listing.listing.title }}</h5>
+          <p class="card-text">Rent: {{ favorite_listing.listing.rent }}</p>
+          <p class="card-text">Room: {{ favorite_listing.listing.room }}</p>
+          <p class="card-text">Amenities: {{ favorite_listing.listing.amenities }}</p>
+          <p class="card-text">Landlord: {{ favorite_listing.listing.landlord }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

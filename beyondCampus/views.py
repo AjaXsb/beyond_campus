@@ -425,3 +425,50 @@ def faq_view(request):
     faqs = FAQ.objects.all()
     return render(request, 'FAQ.html', {'faqs': faqs})
 
+from django.shortcuts import redirect, get_object_or_404
+
+@login_required
+def delete_application(request, application_id):
+    try:
+        # Fetch the application
+        application = Apply.objects.get(pk=application_id)
+        # Ensure that the application belongs to the logged-in user
+        if application.student.user != request.user:
+            return redirect('show_student_applications')  # Redirect to student applications
+        # Delete the application
+        application.delete()
+    except Apply.DoesNotExist:
+        pass  # Handle the case where the application does not exist
+    return redirect('show_student_applications')
+
+@login_required
+def accept_application(request, application_id):
+    try:
+        # Fetch the application
+        application = get_object_or_404(Apply, pk=application_id)
+        # Ensure that the application is associated with a listing owned by the logged-in landlord
+        if application.listing.landlord.user != request.user:
+            return redirect('show_landlord_applications')  # Redirect to landlord applications
+        # Process acceptance logic here
+        # For example, you can update the application status to "Accepted"
+        application.status = "Accepted"
+        application.save()
+    except Apply.DoesNotExist:
+        pass  # Handle the case where the application does not exist
+    return redirect('show_landlord_applications')
+
+@login_required
+def reject_application(request, application_id):
+    try:
+        # Fetch the application
+        application = get_object_or_404(Apply, pk=application_id)
+        # Ensure that the application is associated with a listing owned by the logged-in landlord
+        if application.listing.landlord.user != request.user:
+            return redirect('show_landlord_applications')  # Redirect to landlord applications
+        # Process rejection logic here
+        # For example, you can update the application status to "Rejected"
+        application.status = "Rejected"
+        application.save()
+    except Apply.DoesNotExist:
+        pass  # Handle the case where the application does not exist
+    return redirect('show_landlord_applications')
