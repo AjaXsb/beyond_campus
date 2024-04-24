@@ -388,3 +388,8 @@ def request_maintenance(request):
     return render(request, 'Request_Maintenance.html', {
         'property': property
     })
+
+def faq_view(request):
+    faqs = FAQ.objects.all()
+    return render(request, 'FAQ.html', {'faqs': faqs})
+
