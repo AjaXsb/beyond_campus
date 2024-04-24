@@ -81,6 +81,8 @@ def login_user(request):
 
         user = authenticate(request, username=username, password=password)
         
+        print(user)
+        
         if user is not None:
             login(request, user)
             print("SUCCESFUL")
