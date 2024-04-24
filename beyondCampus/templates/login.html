@@ -90,34 +90,14 @@
   <header>
     <h1>Welcome to Beyond Campus</h1>
   </header>
-
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#">About Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact Us</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
   <main class="container mt-5">
+    <form action="{% url 'profile' %}" method="post">
     <div class="row justify-content-center">
-
-    <form method="post">
-      {% csrf_token %}
         <div class="row justify-content-center">
           <div class="col-md-5"> 
             <div class="mt-5">
             <div class="mb-3">
+              {% csrf_token %}
               <label for="username" class="form-label">Username</label>
               <div class="input-group">
                 <span class="input-group-addon"></span>
@@ -130,19 +110,20 @@
                 <span class="input-group-addon"></span>
                 <input id="password" type="password" class="form-control" name="password" required placeholder="Enter your Password">
             </div>
-
             <div class="mt-3 text-center">
-                <button type="submit" class="btn btn-primary">Login</button>
-              </select>
+              <button type="submit" class="btn btn-primary">Login</button>
             </div>
             <div class="mt-3 text-center">
                 <hr class="my-4"> 
-            <p>Don't have an account?</p>
-            <a href="{% url 'signup' %}" class="btn btn-secondary">Sign up</a></p>
+            </div>
+    </form>
+            <p class="row justify-content-center">Don't have an account?</p>
+            <div class="row justify-content-center">
+            <a href="{% url 'signup' %}" class="btn btn-secondary">Sign up</a>
+             </div>
           </div>
         </div>
       </div>
-    </form>
   </main>
 
   <footer class="bg-dark text-white text-center py-2">

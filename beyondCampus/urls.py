@@ -9,6 +9,12 @@ urlpatterns = [
     path("profile/", views.profile, name="profile"),
     path("logout/", views.logout_user, name="logout"),
 
+    path("listing/",views.listing_detail,name="listingdetail"),
+    path("application",views.apply_to_listing,name="application"),
+    path("reviews",views.property_reviews,name="review"),
+    path("add_favourite",views.add_to_favourites,name="add_favourite"),
+    path("report",views.report_issue,name="report"),
+    
     path("landlord_applications/", views.show_landlord_applications, name="show_landlord_applications"),
     path("student_applications/", views.show_student_applications, name="show_student_applications"),
     path('create-listing/', views.create_listing, name='create_listing'),
