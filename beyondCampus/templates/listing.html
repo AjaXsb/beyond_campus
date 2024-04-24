@@ -11,26 +11,38 @@
       <div class="card h-100">
         <div class="card-body">
           <h5 class="card-title">{{ listing.title }}</h5>
-          <p class="card-text">Address: {{ listing.address }}</p>
-          <p class="card-text">Landlord: {{ listing.landlord.full_name }}</p>
-          <p class="card-text">Number of Occupants: {{ listing.occupants }}</p>
-          <p class="card-text">Price: {{ listing.rent | floatformat:2 }}</p>
-          <p class="card-text">Bed/Bath Info: {{ listing.bedrooms }} beds / {{ listing.bathrooms }} baths</p>
-          <p class="card-text">Ratings: {{ listing.rating }}</p>
-          <p class="card-text">
-            <button onclick="location.href='Application.html'">Apply for Housing</button>
-            <button onclick="location.href='review.html'">See Reviews</button>
-            <button onclick="location.href='favourite.html'">Add to Favourites</button>
-            <button onclick="location.href='report.html'">Report</button>
-          </p>
+          <p class="card-text">Address: {{ listing.title }}</p>
+    <p class="card-text" >Landlord: {{ listing.landlord }}</p>
+    
+    <p class="card-text">Number of Occupants: {{ listing.title }}</p>
+    <p class="card-text">Price: {{ listing.rent }}</p>
+    <p class="card-text">Bed/Bath Info: {{ listing.room }}</p>
+    <p class="card-text">Ratings: {{ listing. }}</p>
+    <p class="card-text">Apply for Housing: <button onclick="location.href='Application.html'">Apply Now</button></p>
+    <form action="review.html">
+        <p>Reviews: <button>See the review</button></p>
+    </form>
+    <form action="favourite.html">
+        <p>Add to Favourites : <button>Add</button> </p>
+    </form>
+    <form action="report.html">
+       <p>Report:<button>Have questions?</button></p>
+    </form>
         </div>
       </div>
     </div>
-    {% empty %}
-      <div class="col-12">
-        <p>No listings available.</p>
-      </div>
     {% endfor %}
   </div>
 </div>
+
+<script>
+  function showDetails(listingId) {
+    var detailsDiv = document.getElementById('details-' + listingId);
+    if (detailsDiv.style.display === 'none') {
+      detailsDiv.style.display = 'block';
+    } else {
+      detailsDiv.style.display = 'none';
+    }
+  }
+</script>
 {% endblock %}
