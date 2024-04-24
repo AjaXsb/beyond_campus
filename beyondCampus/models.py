@@ -91,7 +91,7 @@ class Apply(models.Model):
     additional_info = models.TextField(blank=True, null=True) 
 
     def __str__(self):
-        return self.application_num
+        return str(self.application_num)
 
 class Property(models.Model):
     address = models.CharField(max_length=255)

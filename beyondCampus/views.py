@@ -55,47 +55,23 @@ def register(request):
     return render(request, "signup.html", {"universities": universities})
 
 def index(request):
-    context = {}
-    user = request.user
-    context['user_type'] = 'student' if hasattr(user, 'student') else 'landlord'
+    listings = Listing.objects.all()
 
-    # Retrieve common data for all users
-    if context['user_type'] == 'student':
-        student = user.student
-        context['favorites'] = Fav.objects.filter(student=student)
-        context['applications'] = Apply.objects.filter(student=student)
-        context['waitlists'] = Waitlist.objects.filter(student=student)
-        context['maintenance_requests'] = RequestMaintenance.objects.filter(student=student)
+    ## Calculate average ratings for each listing
+    #for listing in listings:
+    #    property_obj = Property.objects.get(listing=listing)
+    #    avg_rating = Review.objects.filter(property=property_obj).aggregate(Avg('rating'))['rating__avg']
+    #    listing.avg_rating = avg_rating if avg_rating else "No ratings yet"
 
-    # Handling POST requests for updates and actions
-    if request.method == 'POST':
-        if 'update_profile' in request.POST:
-            # Handling profile update logic here
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            student.first_name = first_name
-            student.last_name = last_name
-            student.save()
-            messages.success(request, "Profile updated successfully.")
-            return redirect('index')
+    # Prepare data to pass to the template
+    data = {
+        'listings': listings
+    }
 
-        elif 'submit_request' in request.POST:
-            # Handling maintenance request submission
-            description = request.POST.get('issue')
-            RequestMaintenance.objects.create(property_id=1, student=student,
-                                              description=description)  # Adjust property_id as needed
-            messages.success(request, "Maintenance request submitted successfully.")
-            return redirect('index')
-
-        elif 'submit_report' in request.POST:
-            # Handling issue reporting
-            report_issue = request.POST.get('reportIssue')
-            Report.objects.create(student=student, listing_id=1, type=report_issue)  # Adjust listing_id as needed
-            messages.success(request, "Issue reported successfully.")
-            return redirect('index')
-            
-    return render(request, "listing.html")
-
+    # Render the template with the data
+    return render(request, 'index.html', data)
+    
+    
 def login_user(request):
 
     if request.method == "POST":
@@ -152,24 +128,6 @@ def profile(request):
             
             return redirect(index)
     
-
-def listing_detail(request, listing_id):
-    listing = get_object_or_404(Listing, pk=listing_id)
-    reviews = Review.objects.filter(property_id=listing.property_id)
-    average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] if reviews.exists() else "No ratings yet"
-
-    if request.method == 'POST':
-        if 'add_fav' in request.POST:
-            # Assuming the user is logged in and is a student
-            Fav.objects.create(student=request.user.student, listing=listing)
-            return redirect('listing_detail', listing_id=listing_id)  # Redirect back to the same listing page
-
-    context = {
-        'listing': listing,
-        'average_rating': average_rating,
-    }
-    return render(request, 'listing.html', context)
-
 
 def report_issue(request, property_id):
     property = get_object_or_404(Property, pk=property_id)
@@ -425,3 +383,50 @@ def faq_view(request):
     faqs = FAQ.objects.all()
     return render(request, 'FAQ.html', {'faqs': faqs})
 
+from django.shortcuts import redirect, get_object_or_404
+
+@login_required
+def delete_application(request, application_id):
+    try:
+        # Fetch the application
+        application = Apply.objects.get(pk=application_id)
+        # Ensure that the application belongs to the logged-in user
+        if application.student.user != request.user:
+            return redirect('show_student_applications')  # Redirect to student applications
+        # Delete the application
+        application.delete()
+    except Apply.DoesNotExist:
+        pass  # Handle the case where the application does not exist
+    return redirect('show_student_applications')
+
+@login_required
+def accept_application(request, application_id):
+    try:
+        # Fetch the application
+        application = get_object_or_404(Apply, pk=application_id)
+        # Ensure that the application is associated with a listing owned by the logged-in landlord
+        if application.listing.landlord.user != request.user:
+            return redirect('show_landlord_applications')  # Redirect to landlord applications
+        # Process acceptance logic here
+        # For example, you can update the application status to "Accepted"
+        application.status = "Accepted"
+        application.save()
+    except Apply.DoesNotExist:
+        pass  # Handle the case where the application does not exist
+    return redirect('show_landlord_applications')
+
+@login_required
+def reject_application(request, application_id):
+    try:
+        # Fetch the application
+        application = get_object_or_404(Apply, pk=application_id)
+        # Ensure that the application is associated with a listing owned by the logged-in landlord
+        if application.listing.landlord.user != request.user:
+            return redirect('show_landlord_applications')  # Redirect to landlord applications
+        # Process rejection logic here
+        # For example, you can update the application status to "Rejected"
+        application.status = "Rejected"
+        application.save()
+    except Apply.DoesNotExist:
+        pass  # Handle the case where the application does not exist
+    return redirect('show_landlord_applications')

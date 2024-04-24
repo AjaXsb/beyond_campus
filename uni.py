@@ -22,5 +22,5 @@ def import_universities_from_excel(file_path):
             university.save()
 
 # Example usage:
-file_path = r'D:\Chikku\Docs\Code\DBMS\Proj\beyond_campus\Universities_list.xlsx'
+file_path = r'VSCode\github\proj\beyond_campus\Universities_list.xlsx'
 import_universities_from_excel(file_path)
