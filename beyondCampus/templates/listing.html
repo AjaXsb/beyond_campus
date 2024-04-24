@@ -1,0 +1,40 @@
+
+{% extends "base.html" %}
+
+{% block title %}Listings{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mt-4">Listings</h2>
+  <div class="row mt-4" id="listing-row">
+    {% if listings %}
+      {% for listing in listings %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">{{ listing.title }}</h5>
+            <p class="card-text"><strong>Rent:</strong> {{ listing.rent }}</p>
+            <p class="card-text"><strong>Room:</strong> {{ listing.room }}</p>
+            <p class="card-text"><strong>Amenities:</strong> {{ listing.amenities }}</p>
+            <p class="card-text"><strong>Landlord:</strong> {{ listing.landlord.name }}</p>
+            <button onclick="location.href='{% url 'application' %}'">Apply Now</button>
+            <form action="{% url 'review' listing.id %}" method="get">
+              <button type="submit">See Reviews</button>
+            </form>
+            <form action="{% url 'add_favourite' listing.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit">Add to Favourites</button>
+            </form>
+            <form action="{% url 'report' listing.id %}" method="get">
+              <button type="submit">Report</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>No listings available.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
