@@ -1,10 +1,8 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Your Favourite Properties</title>
-</head>
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
 <body>
     <h1>Your Favourite Properties</h1>
     {% if favourites %}
@@ -24,4 +22,4 @@
     {% endif %}
     <a href=student_dashboard.html>Back to Home</a>
 </body>
-</html>
+{% endblock %}
