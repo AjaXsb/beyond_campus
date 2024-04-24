@@ -4,108 +4,166 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "proj.settings")
 django.setup()
 
+import random
+from faker import Faker
 from django.contrib.auth.models import User
-from beyondCampus.models import University, Student, Landlord, RentalAgreement, Listing, Image, Fav, Report, Waitlist, Apply, Property, RentalInsurance, UtilityProvider, Occupy, Review, UtilityProvide, CoveredBy, RequestMaintenance, LandlordOwn
+from django.utils import timezone
+from django.contrib.auth.models import User
+from beyondCampus.models import University, Student, Landlord, RentalAgreement, Listing, Image, Fav, Report, Waitlist, Apply, Property, RentalInsurance, UtilityProvider, Occupy, FAQ, Review, UtilityProvide, CoveredBy, RequestMaintenance, LandlordOwn
 
-# Create at least 10 University instances
-for i in range(1, 11):
-    University.objects.create(name=f'University {i}', location=f'Location {i}')
+fake = Faker()
+# Create Users and link to Students and Landlords
+for _ in range(40):
+    user = User.objects.create_user(
+        username=fake.user_name(),
+        email=fake.email(),
+        password="password"
+    )
+    Student.objects.create(
+        user=user,
+        first_name=fake.first_name(),
+        last_name=fake.last_name(),
+        phone=fake.phone_number(),
+        address=fake.address(),
+        university=random.choice(University.objects.all())
+    )
+    Landlord.objects.create(
+        user=user,
+        ssn=fake.ssn(),
+        first_name=fake.first_name(),
+        last_name=fake.last_name(),
+        phone=fake.phone_number(),
+        address=fake.address()
+    )
 
-# Create at least 10 Student instances
-for i in range(1, 11):
-    user = User.objects.create(username=f'student{i}')
-    Student.objects.create(user=user, full_name=f'Student {i}', phone=f'Phone {i}', address=f'Address {i}', university_id=i)
+# Create RentalAgreements
+for _ in range(20):
+    RentalAgreement.objects.create(
+        landlord=random.choice(Landlord.objects.all()),
+        student=random.choice(Student.objects.all()),
+        property_id=random.randint(1000, 9999),
+        start_date=fake.date_between(start_date="-1y", end_date="today"),
+        end_date=fake.date_between(start_date="today", end_date="+1y"),
+        rent_amount=random.randint(500, 2000),
+        agreement_terms=fake.text()
+    )
 
-# Create at least 10 Landlord instances
-for i in range(1, 11):
-    user = User.objects.create(username=f'landlord{i}')
-    Landlord.objects.create(user=user, ssn=f'SSN {i}', full_name=f'Landlord {i}')
-
-# Create at least 10 RentalAgreement instances
-for i in range(1, 11):
-    landlord = Landlord.objects.get(id=i)
-    student = Student.objects.get(id=i)
-    RentalAgreement.objects.create(landlord=landlord, student=student, property_id=i, start_date=f'2024-01-{i}', end_date=f'2024-12-{i}', rent_amount=i*100, agreement_terms=f'Agreement Terms {i}')
-
-# Create at least 10 Listing instances
-for i in range(1, 11):
-    landlord = Landlord.objects.get(id=i)
-    Listing.objects.create(title=f'Listing {i}', rent=f'Rent {i}', room=f'Room {i}', amenities=f'Amenities {i}', landlord=landlord)
-
-# Create at least 10 Image instances
-for i in range(1, 11):
-    listing = Listing.objects.get(id=i)
+# Create Listings and Images
+for _ in range(20):
+    landlord = random.choice(Landlord.objects.all())
+    listing = Listing.objects.create(
+        title=fake.text(max_nb_chars=50),
+        rent=str(random.randint(500, 2000)),
+        room=str(random.randint(1, 5)),
+        amenities=fake.text(max_nb_chars=100),
+        landlord=landlord
+    )
     Image.objects.create(listing=listing)
 
-# Create at least 10 Fav instances
-for i in range(1, 11):
-    student = Student.objects.get(id=i)
-    listing = Listing.objects.get(id=i)
-    Fav.objects.create(student=student, listing=listing)
+# Create Favs
+for _ in range(20):
+    Fav.objects.create(
+        student=random.choice(Student.objects.all()),
+        listing=random.choice(Listing.objects.all())
+    )
 
-# Create at least 10 Report instances
-for i in range(1, 11):
-    student = Student.objects.get(id=i)
-    listing = Listing.objects.get(id=i)
-    Report.objects.create(student=student, listing=listing, type=f'Type {i}')
+# Create Reports
+for _ in range(20):
+    Report.objects.create(
+        student=random.choice(Student.objects.all()),
+        listing=random.choice(Listing.objects.all()),
+        type=random.choice(["Maintenance", "Safety", "Noise"])
+    )
 
-# Create at least 10 Waitlist instances
-for i in range(1, 11):
-    student = Student.objects.get(id=i)
-    listing = Listing.objects.get(id=i)
-    Waitlist.objects.create(student=student, listing=listing, status=f'Status {i}')
+# Create Waitlists
+for _ in range(20):
+    Waitlist.objects.create(
+        student=random.choice(Student.objects.all()),
+        listing=random.choice(Listing.objects.all()),
+        status=random.choice(["Pending", "Approved", "Rejected"])
+    )
 
-# Create at least 10 Apply instances
-for i in range(1, 11):
-    student = Student.objects.get(id=i)
-    listing = Listing.objects.get(id=i)
-    Apply.objects.create(student=student, listing=listing, application_num=i)
+# Create Applications
+for _ in range(20):
+    Apply.objects.create(
+        student=random.choice(Student.objects.all()),
+        listing=random.choice(Listing.objects.all()),
+        application_num=random.randint(1000, 9999),
+        preferences=fake.text(max_nb_chars=100),
+        additional_info=fake.text()
+    )
 
-# Create at least 10 Property instances
-for i in range(1, 11):
-    Property.objects.create(address=f'Address {i}')
+# Create Properties
+for _ in range(20):
+    Property.objects.create(
+        address=fake.address()
+    )
 
-# Create at least 10 RentalInsurance instances
-for i in range(1, 11):
-    RentalInsurance.objects.create(insurance_email=f'email{i}@example.com', insurance_name=f'Insurance {i}')
+# Create RentalInsurances
+for _ in range(20):
+    RentalInsurance.objects.create(
+        insurance_email=fake.email(),
+        insurance_name=fake.company()
+    )
 
-# Create at least 10 UtilityProvider instances
-for i in range(1, 11):
-    UtilityProvider.objects.create(provider_email=f'email{i}@example.com', telephone_number=f'Phone {i}', provider_name=f'Provider {i}')
+# Create UtilityProviders
+for _ in range(20):
+    UtilityProvider.objects.create(
+        provider_email=fake.email(),
+        telephone_number=fake.phone_number(),
+        provider_name=fake.company()
+    )
 
-# Create at least 10 Occupy instances
-for i in range(1, 11):
-    property = Property.objects.get(id=i)
-    student = Student.objects.get(id=i)
-    Occupy.objects.create(property=property, student=student)
+# Create Occupies
+for _ in range(20):
+    Occupy.objects.create(
+        property=random.choice(Property.objects.all()),
+        student=random.choice(Student.objects.all())
+    )
 
-# Create at least 10 Review instances
-for i in range(1, 11):
-    property = Property.objects.get(id=i)
-    student = Student.objects.get(id=i)
-    Review.objects.create(property=property, student=student, rating=i)
+# Create Reviews
+for _ in range(20):
+    Review.objects.create(
+        property=random.choice(Property.objects.all()),
+        student=random.choice(Student.objects.all()),
+        rating=random.randint(1, 5)
+    )
 
-# Create at least 10 UtilityProvide instances
-for i in range(1, 11):
-    property = Property.objects.get(id=i)
-    provider = UtilityProvider.objects.get(id=i)
-    UtilityProvide.objects.create(property=property, provider=provider)
+# Create UtilityProvides
+for _ in range(20):
+    UtilityProvide.objects.create(
+        property=random.choice(Property.objects.all()),
+        provider=random.choice(UtilityProvider.objects.all())
+    )
 
-# Create at least 10 CoveredBy instances
-for i in range(1, 11):
-    insurance = RentalInsurance.objects.get(id=i)
-    property = Property.objects.get(id=i)
-    CoveredBy.objects.create(insurance=insurance, property=property)
+# Create CoveredBys
+for _ in range(20):
+    CoveredBy.objects.create(
+        insurance=random.choice(RentalInsurance.objects.all()),
+        property=random.choice(Property.objects.all())
+    )
 
-# Create at least 10 RequestMaintenance instances
-for i in range(1, 11):
-    property = Property.objects.get(id=i)
-    student = Student.objects.get(id=i)
-    RequestMaintenance.objects.create(property=property, student=student, description=f'Description {i}')
+# Create RequestMaintenances
+for _ in range(20):
+    RequestMaintenance.objects.create(
+        property=random.choice(Property.objects.all()),
+        student=random.choice(Student.objects.all()),
+        issue_type=random.choice(["Plumbing", "Electrical", "General"]),
+        description=fake.text()
+    )
 
-# Create at least 10 LandlordOwn instances
-for i in range(1, 11):
-    landlord = Landlord.objects.get(id=i)
-    property = Property.objects.get(id=i)
-    LandlordOwn.objects.create(landlord=landlord, property=property)
+# Create LandlordOwns
+for _ in range(20):
+    LandlordOwn.objects.create(
+        landlord=random.choice(Landlord.objects.all()),
+        property=random.choice(Property.objects.all())
+    )
 
+# Create FAQs
+for _ in range(20):
+    FAQ.objects.create(
+        question=fake.text(max_nb_chars=100),
+        answer=fake.text()
+    )
+
+print("Data populated successfully!")

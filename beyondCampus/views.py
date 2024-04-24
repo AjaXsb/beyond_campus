@@ -94,7 +94,7 @@ def index(request):
             messages.success(request, "Issue reported successfully.")
             return redirect('index')
             
-        return render(request, "index.html")
+    return render(request, "listing.html")
 
 def login_user(request):
 
@@ -142,14 +142,16 @@ def profile(request):
             user_info = Landlord.objects.get(user=request.user)
             user_type = 'landlord'
             properties = Property.objects.filter(landlordown__landlord=user_info)
-            print(properties)
+
+            return render(request, "landlord_dashboard.html", {"user_info": user_info, "user_type": user_type, "properties": properties})
 
         except Landlord.DoesNotExist:
             # Handle the case where the user does not have a Student or Landlord object
             user_info = None
             user_type = None
             
-    return render(request, "Landloard_Dashboard.html", {"user_info": user_info, "user_type": user_type, "properties": properties})
+            return redirect(index)
+    
 
 def listing_detail(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
@@ -272,26 +274,56 @@ def utility_provide(request):
 
 
 @login_required
-def show_applications(request):
-    student = request.user.student  # Assuming the student is related to the User model
+def show_student_applications(request):
+    try:
+        student = request.user.student  # Assuming the student is related to the User model
 
-    # Get all applications associated with the student
-    applications = Apply.objects.filter(student=student)
+        # Get all applications associated with the student
+        applications = Apply.objects.filter(student=student)
 
-    # Retrieve the status for each application
-    for application in applications:
-        waitlist = Waitlist.objects.filter(student=student, listing=application.listing).first()
-        if waitlist:
-            application.status = waitlist.status
-        else:
-            application.status = "Unknown"
+        # Retrieve the status for each application
+        for application in applications:
+            waitlist = Waitlist.objects.filter(student=student, listing=application.listing).first()
+            if waitlist:
+                application.status = waitlist.status
+            else:
+                application.status = "Unknown"
 
-    # Prepare data to pass to the template
-    data = {
-        'applications': applications
-    }
+        # Prepare data to pass to the template
+        data = {
+            'applications': applications
+        }
 
-    return render(request, 'show_applications.html', data)
+        return render(request, 'show_student_applications.html', data)
+    
+    except Student.DoesNotExist:
+        return redirect(index)
+
+@login_required
+def show_landlord_applications(request):
+    try:
+        landlord = Landlord.objects.get(user=request.user)
+            
+        # Get all listings associated with the landlord
+        listings = Listing.objects.filter(landlord=landlord)
+
+        # Fetch applications for each listing
+        applications = []
+        for listing in listings:
+            listing_applications = Apply.objects.filter(listing=listing)
+            for application in listing_applications:
+                applications.append(application)
+
+        # Prepare data to pass to the template
+        data = {
+            'applications': applications
+        }
+
+        return render(request, 'show_landlord_applications.html', data)
+
+    except Landlord.DoesNotExist:
+        return redirect(index)
+
     
     
 @login_required

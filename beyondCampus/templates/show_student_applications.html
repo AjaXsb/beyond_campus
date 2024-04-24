@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Student Applications{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Applications</h1>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Listing Name</th>
+                <th>Application Number</th>
+                <th>Status</th>
+                <th>Action</th>
+                <!-- Add more table headings as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+                <tr>
+                    <td>{{ application.listing.title }}</td>
+                    <td>{{ application.application_num }}</td>
+                    <td>{{ application.status }}</td>
+                    <td><a href="{% url 'delete_application' application.id %}">Delete</a></td>
+                    <!-- Add more table cells as needed -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

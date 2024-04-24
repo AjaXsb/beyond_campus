@@ -1,129 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Beyond Campus{% endblock %}</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom CSS -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #333;
-      color: #fff;
-      padding: 20px 0;
-      text-align: center;
-    }
-    nav {
-      background-color: #666;
-      padding: 10px 0;
-      text-align: center;
-    }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      padding: 10px 20px;
-    }
-    nav a:hover {
-      background-color: #999;
-    }
 
-    main {
-      flex: 1;
-      padding: 30px;
-      padding-bottom: 80px;
-    }
 
-    input.form-control {
-        border: 2px solid #fff; 
-        padding: 10px;
-    }
+{% extends "base.html" %}
 
-    input.form-control:focus {
-        border-color: #4A90E2; 
-        box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
-    }
+{% block title %}Student Dashboard{% endblock %}
 
-    button.btn-primary {
-        background-color: #6c757d;
-        color: white;
-        padding: 8px;
-        border-radius: 5px;
-        font-size: 16px;
-    }
-
-    button.btn-primary:hover {
-        background-color: #6f5F2d;
-        box-shadow: ; 
-        }
-    
-    a.btn-secondary {
-        color: white; 
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 16px; 
-        }
-    
-    a.btn-secondary:hover {
-        background-color: #6f5F2d; 
-        box-shadow: ; 
-        }
-    
-    footer {
-      background-color: #333;
-      color: #fff;
-      padding: 10px;
-      text-align: center;
-      width: 100%;
-    }
-
-    #container {
-        width: 100%;
-        max-width: 700px;
-        margin: 2em auto;
-    }
-    
-    .box {
-        margin-bottom: 20px;
-        height:100px;
-        background:#BFBFBF;
-    }
-  </style>
-  
-</head>
-<body>
-
-  <header>
-    <h1>Beyond Campus</h1>
-  </header>
-
- 
-  
-  <main class="mt-4" id="container" class="cols">
-    <div class="row justify-content-center">
-        <h1 class="row md-4"> Welcome to Landlord Dashboard</h1>
+{% block content %}
+<header>
+    <h1>Welcome to Beyond Campus</h1>
+</header>
+<div class="container">
+    <div class="row">
+        <!-- Profile Information -->
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <h3 class="card-title">User Profile</h3>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username:</label>
+                        <input type="text" class="form-control" id="username" value="{{ user.username }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name:</label>
+                        <input type="text" class="form-control" id="first_name" value="{{ user.first_name }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Last Name:</label>
+                        <input type="text" class="form-control" id="last_name" value="{{ user.last_name }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" class="form-control" id="email" value="{{ user.email }}" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+          <section class="container">
+              <h2>My Dashboard</h2>
+              <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#listingFormCollapse" aria-expanded="false" aria-controls="listingFormCollapse">
+                Create Listing
+              </button>
+              <!-- Listing creation form -->
+              <div class="collapse mt-3" id="listingFormCollapse">
+                <div class="card card-body">
+                  <form method="post" action="{% url 'create_listing' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <label for="title" class="form-label">Title:</label>
+                      <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="rent" class="form-label">Rent:</label>
+                      <input type="text" class="form-control" id="rent" name="rent" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="room" class="form-label">Rooms:</label>
+                      <input type="text" class="form-control" id="room" name="room" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="amenities" class="form-label">Amenities:</label>
+                      <textarea class="form-control" id="amenities" name="amenities" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="property" class="form-label">Property:</label>
+                      <select class="form-control" id="property" name="property" required>
+                        {% for property in properties %}
+                          <option value="{{ property.id }}">{{ property.address }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                  </form>
+                </div>
+              </div>
+              <p><a href="{% url 'landlord_applications' %}" class="btn btn-secondary">Applications</a></p>
+          </section>
       </div>
-    <div class="box">Profile</div>
-    <div class="box">Post a Listing</div>
-    <div class="box">Update a Listing</div>
-    <div class="box">Applications Received</div>
-    <div class="box">Signed Agreements</div>
-    <div class="box">Delete a listing</div>
-    </div>
-</main>
+  </div>
+</div>
 
-  
+<section id="faq" class="container">
+  <h2>FAQ</h2>
+  <div class="card">
+      <p>Here you can find answers to common questions about housing.</p>
+  </div>
+</section>
 
-  <<footer class="bg-dark text-white text-center py-2">
-    &copy; 2024 Beyond Campus
-  </footer>
-
-
-  <!-- Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
