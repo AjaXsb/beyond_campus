@@ -18,7 +18,8 @@
     <p class="card-text">Price: {{ listing.rent }}</p>
     <p class="card-text">Bed/Bath Info: {{ listing.room }}</p>
     <p class="card-text">Ratings: {{ listing. }}</p>
-    <p class="card-text">Apply for Housing: <button onclick="location.href='Application.html'">Apply Now</button></p>
+    <p class="card-text">Apply for Housing: <a href="{% url 'apply_to_listing' listing.id %}">Apply Now</a></p>
+
     <form action="favourite.html">
         <p>Add to Favourites : <button>Add</button> </p>
     </form>

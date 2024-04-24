@@ -315,37 +315,48 @@ def create_listing(request):
     
         return render(request, 'profile.html', {'properties_owned': properties_owned})
 
+import random
+
 @login_required
 def apply_to_listing(request, listing_id):
-    listing = get_object_or_404(Listing, pk=listing_id)
-    rental_agreement = RentalAgreement.objects.filter(listing=listing).first()
-    
     if request.method == 'POST':
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
+        listing = get_object_or_404(Listing, pk=listing_id)
         preferences = request.POST.get('preferences')
         additional_info = request.POST.get('additional_info')
-        agree_terms = request.POST.get('agree_terms') == 'on'
+
+        min_num = 100000  # Minimum application number
+        max_num = 999999  # Maximum application number
+        application_num = random.randint(min_num, max_num)
+
+
         
-        if agree_terms:
-            application = Apply.objects.create(
-                student=request.user.student,
-                listing=listing,
-                start_date=start_date,
-                end_date=end_date,
-                preferences=preferences,
-                additional_info=additional_info,
-                agreement_terms=rental_agreement.agreement_terms  
-            )
-            return redirect('applications', application_num=application.application_num)
-        else:
-            messages.error(request, 'You must agree to the terms and conditions to apply.')
-    
-    context = {
-        'listing': listing,
-        'rental_agreement': rental_agreement
-    }
-    return render(request, 'Application.html', context)
+        # Create the application
+        application = Apply.objects.create(
+            student=request.user.student,
+            listing=listing,
+            application_num=application_num,
+            preferences=preferences,
+            additional_info=additional_info
+        )
+
+        # Create a waitlist entry
+        waitlist_entry = Waitlist.objects.create(
+            student=request.user.student,
+            listing=listing,
+            status='Pending'
+        )
+
+        # Optionally, you can add a success message
+        messages.success(request, 'Application submitted successfully.')
+
+        # Redirect to a relevant page after applying
+        return redirect('index')  # You can change 'index' to the appropriate URL
+
+    else:
+        # If the request method is not POST, render the page where users can input their application details
+        listing = get_object_or_404(Listing, pk=listing_id)
+        context = {'listing': listing}
+        return render(request, 'application.html', context)
         
 @login_required
 def request_maintenance(request):
